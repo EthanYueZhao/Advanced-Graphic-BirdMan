@@ -6,6 +6,7 @@
 
 
 
+
 //author: Yue Zhao  1-29-2015
 //filename: BirdMan.js
 
@@ -20,49 +21,28 @@ var step = 0;
 var oldContext = null;
 
 
+
+
 function init() {
     // create a scene, that will hold all our elements such as objects, cameras and lights.
     scene = new THREE.Scene();
 
     // create a render and set the size
     webGLRenderer = new THREE.WebGLRenderer();
-    webGLRenderer.setClearColor(0xeeeeee, 1.0);
+    webGLRenderer.setClearColor(0xF0F0F0, 1.0);
     webGLRenderer.setSize(window.innerWidth, window.innerHeight);
     webGLRenderer.shadowMapEnabled = true;
 
 
     renderer = webGLRenderer;
-
+   
     // add the output of the renderer to the html element
     document.body.appendChild(renderer.domElement);
 }
 
 function addGeometries() {
-    //var groundGeom = new THREE.PlaneGeometry(100, 100, 4, 4);
-    //var groundMesh = new THREE.Mesh(groundGeom, new THREE.MeshBasicMaterial({ color: 0x777777 }));
-    //groundMesh.rotation.x = -Math.PI / 2;
-    //groundMesh.position.y = -20;
-    //scene.add(groundMesh);
-
-    var sphereGeometry = new THREE.SphereGeometry(14, 20, 20);
-    var cubeGeometry = new THREE.CubeGeometry(15, 15, 15);
-    var planeGeometry = new THREE.PlaneGeometry(14, 14, 4, 4);
 
 
-    meshMaterial = new THREE.MeshBasicMaterial({ color: 0x7777ff });
-
-    sphere = new THREE.Mesh(sphereGeometry, meshMaterial);
-    cube = new THREE.Mesh(cubeGeometry, meshMaterial);
-    plane = new THREE.Mesh(planeGeometry, meshMaterial);
-
-    // position the sphere
-    sphere.position.x = 0;
-    sphere.position.y = 3;
-    sphere.position.z = 2;
-
-
-    cube.position = sphere.position;
-    plane.position = sphere.position;
 
     birdman = new THREE.Object3D();
 
@@ -86,13 +66,17 @@ function addGeometries() {
     var rightLeg = leftLeg.clone();
     rightLeg.position.set(0, 0, 20);
 
-    var sphereLow = new THREE.Mesh(new THREE.SphereGeometry(6), new THREE.MeshBasicMaterial({ color: 0xBEBEBE }));
+    var sphereLow = new THREE.Mesh(new THREE.SphereGeometry(6), new THREE.MeshBasicMaterial({ color: 0xBEBEBE, transparent: true, opacity: 0.5 }));
     sphereLow.position.set(0, 15, 0);
     //need material and inner sphere
+    var sphereInner = new THREE.Mesh(new THREE.SphereGeometry(5,100,100, Math.PI / 2, Math.PI*2, Math.PI / 2, Math.PI), new THREE.MeshBasicMaterial({ color: 0x0080FF }));
+    sphereInner.position.set(0, 15, 0);
 
-    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 30), new THREE.MeshBasicMaterial({ color: 0xBEBEBE }));
-    cylinder.position.set(0, 33, 0);
-    //need material and inner cylinder
+    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 30), new THREE.MeshBasicMaterial({ color: 0xBEBEBE, transparent: true, opacity: 0.5 }));
+    cylinder.position.set(0, 35.5, 0);
+    
+    var cylinderInner = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 20), new THREE.MeshBasicMaterial({ color: 0x0080FF }));
+    cylinderInner.position.set(0, 25, 0);
 
     var sphereHigh = new THREE.Mesh(new THREE.SphereGeometry(6), new THREE.MeshBasicMaterial({ color: 0xCE0000 }));
     sphereHigh.position.set(0, 51, 0);
@@ -107,7 +91,9 @@ function addGeometries() {
     birdman.add(leftLeg);
     birdman.add(rightLeg);
     birdman.add(sphereLow);
+    birdman.add(sphereInner);
     birdman.add(cylinder);
+    birdman.add(cylinderInner);
     birdman.add(sphereHigh);
     birdman.add(hatEdge);
     birdman.add(hat);
@@ -238,12 +224,13 @@ function setupCameraAndLight() {
     spotLight.position.set(-40, 60, -10);
     spotLight.castShadow = true;
     scene.add(spotLight);
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
 }
 
 function animate() {
     // stats.update();
 
-    birdman.rotation.y = step += 0.01;
+   // birdman.rotation.y = step += 0.01;
     // plane.rotation.y = step;
     // sphere.rotation.y = step;
 
