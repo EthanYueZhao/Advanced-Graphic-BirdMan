@@ -10,10 +10,11 @@
 //filename: BirdMan.js
 
 //declare global variables
-var scene, camera, renderer, webGLRenderer, canvasRenderer;
+var scene, camera, renderer, webGLRenderer;
 var stats, controls;
 var cube, sphere, plane;
 var meshMaterial;
+var birdman;
 
 var step = 0;
 var oldContext = null;
@@ -37,11 +38,11 @@ function init() {
 }
 
 function addGeometries() {
-    var groundGeom = new THREE.PlaneGeometry(100, 100, 4, 4);
-    var groundMesh = new THREE.Mesh(groundGeom, new THREE.MeshBasicMaterial({ color: 0x777777 }));
-    groundMesh.rotation.x = -Math.PI / 2;
-    groundMesh.position.y = -20;
-    scene.add(groundMesh);
+    //var groundGeom = new THREE.PlaneGeometry(100, 100, 4, 4);
+    //var groundMesh = new THREE.Mesh(groundGeom, new THREE.MeshBasicMaterial({ color: 0x777777 }));
+    //groundMesh.rotation.x = -Math.PI / 2;
+    //groundMesh.position.y = -20;
+    //scene.add(groundMesh);
 
     var sphereGeometry = new THREE.SphereGeometry(14, 20, 20);
     var cubeGeometry = new THREE.CubeGeometry(15, 15, 15);
@@ -63,9 +64,57 @@ function addGeometries() {
     cube.position = sphere.position;
     plane.position = sphere.position;
 
+    birdman = new THREE.Object3D();
 
+
+    var base = new THREE.Mesh(new THREE.BoxGeometry(20, 1, 21), new THREE.MeshBasicMaterial({ color: 0xCE0000 }));
+
+    var leftLeg = new THREE.Object3D();
+
+    var cube1 = new THREE.Mesh(new THREE.BoxGeometry(20, 5, 1), new THREE.MeshBasicMaterial({ color: 0xCE0000 }));
+    cube1.position.set(0, 2.5, -10);
+    leftLeg.add(cube1);
+
+    var cube2 = new THREE.Mesh(new THREE.BoxGeometry(8, 5, 1), new THREE.MeshBasicMaterial({ color: 0xCE0000 }));
+    cube2.position.set(3, 7.5, -10);
+    leftLeg.add(cube2);
+
+    var cube3 = new THREE.Mesh(new THREE.BoxGeometry(6, 30, 1), new THREE.MeshBasicMaterial({ color: 0xBEBEBE }));
+    cube3.position.set(3, 25, -10);
+    leftLeg.add(cube3);
+
+    var rightLeg = leftLeg.clone();
+    rightLeg.position.set(0, 0, 20);
+
+    var sphereLow = new THREE.Mesh(new THREE.SphereGeometry(6), new THREE.MeshBasicMaterial({ color: 0xBEBEBE }));
+    sphereLow.position.set(0, 15, 0);
+    //need material and inner sphere
+
+    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 30), new THREE.MeshBasicMaterial({ color: 0xBEBEBE }));
+    cylinder.position.set(0, 33, 0);
+    //need material and inner cylinder
+
+    var sphereHigh = new THREE.Mesh(new THREE.SphereGeometry(6), new THREE.MeshBasicMaterial({ color: 0xCE0000 }));
+    sphereHigh.position.set(0, 51, 0);
+
+    var hatEdge = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 2), new THREE.MeshBasicMaterial({ color: 0x0000C6 }));
+    hatEdge.position.set(0, 55, 0);
+
+    var hat = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 8), new THREE.MeshBasicMaterial({ color: 0x0000C6 }));
+    hat.position.set(0, 60, 0);
+
+    birdman.add(base);
+    birdman.add(leftLeg);
+    birdman.add(rightLeg);
+    birdman.add(sphereLow);
+    birdman.add(cylinder);
+    birdman.add(sphereHigh);
+    birdman.add(hatEdge);
+    birdman.add(hat);
+
+    birdman.position.set(0, 0, 0);
     // add the sphere to the scene
-    scene.add(cube);
+    scene.add(birdman);
 }
 
 function initGui() {
@@ -176,8 +225,8 @@ function setupCameraAndLight() {
 
     // position and point the camera to the center of the scene
     camera.position.x = -20;
-    camera.position.y = 50;
-    camera.position.z = 40;
+    camera.position.y = 100;
+    camera.position.z = 200;
     camera.lookAt(new THREE.Vector3(10, 0, 0));
 
     // add subtle ambient lighting
@@ -192,11 +241,11 @@ function setupCameraAndLight() {
 }
 
 function animate() {
-    stats.update();
+    // stats.update();
 
-    cube.rotation.y = step += 0.01;
-    plane.rotation.y = step;
-    sphere.rotation.y = step;
+    birdman.rotation.y = step += 0.01;
+    // plane.rotation.y = step;
+    // sphere.rotation.y = step;
 
     // render using requestAnimationFrame
     requestAnimationFrame(animate);
@@ -209,7 +258,7 @@ function initStats() {
     // Align top-left
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px'; 
+    stats.domElement.style.top = '0px';
     document.body.appendChild(stats.domElement);
 }
 
@@ -217,7 +266,7 @@ window.onload = function () {
     init();
     addGeometries();
     setupCameraAndLight();
-    initStats();
-    initGui();
+    //initStats();
+    //initGui();
     animate();
 };
